@@ -1,0 +1,33 @@
+{
+  "name": "open-web-ui-client",
+  "version": "1.0.0",
+  "description": "OpenWebUI plugin client that accepts URL and API key (TypeScript)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && node dist/index.js",
+    "test": "npm run build && node dist/test.js",
+    "example": "npm run build && node dist/example.js",
+    "watch": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "openwebui",
+    "plugin",
+    "api",
+    "client",
+    "typescript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  }
+}
