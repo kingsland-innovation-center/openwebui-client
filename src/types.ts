@@ -38,7 +38,16 @@ export interface FunctionCall {
 }
 
 /**
+ * File reference for RAG (Retrieval Augmented Generation)
+ */
+export interface FileReference {
+  type: 'file' | 'collection';
+  id: string;
+}
+
+/**
  * Chat completion request payload
+ * Supports RAG via files parameter
  */
 export interface ChatCompletionPayload {
   model: string;
@@ -52,6 +61,8 @@ export interface ChatCompletionPayload {
   stream?: boolean;
   functions?: FunctionDefinition[];
   function_call?: 'none' | 'auto' | { name: string };
+  /** RAG: Reference files or knowledge collections */
+  files?: FileReference[];
 }
 
 /**
@@ -195,4 +206,80 @@ export interface RequestOptions {
 export interface DeleteResponse {
   success: boolean;
   message?: string;
+}
+
+/**
+ * Uploaded file information
+ */
+export interface UploadedFile {
+  id: string;
+  filename: string;
+  size?: number;
+  content_type?: string;
+  created_at?: string;
+  updated_at?: string;
+  [key: string]: unknown;
+}
+
+/**
+ * Ollama generate request payload
+ */
+export interface OllamaGeneratePayload {
+  model: string;
+  prompt: string;
+  stream?: boolean;
+  context?: number[];
+  options?: Record<string, unknown>;
+}
+
+/**
+ * Ollama generate response
+ */
+export interface OllamaGenerateResponse {
+  model: string;
+  created_at: string;
+  response: string;
+  done: boolean;
+  context?: number[];
+  total_duration?: number;
+  load_duration?: number;
+  prompt_eval_count?: number;
+  prompt_eval_duration?: number;
+  eval_count?: number;
+  eval_duration?: number;
+}
+
+/**
+ * Ollama embed request payload
+ */
+export interface OllamaEmbedPayload {
+  model: string;
+  input: string | string[];
+  options?: Record<string, unknown>;
+}
+
+/**
+ * Ollama embed response
+ */
+export interface OllamaEmbedResponse {
+  embeddings: number[][];
+}
+
+/**
+ * Ollama tags response (list of models)
+ */
+export interface OllamaTagsResponse {
+  models: Array<{
+    name: string;
+    modified_at: string;
+    size: number;
+    digest: string;
+    details?: {
+      format: string;
+      family: string;
+      families?: string[];
+      parameter_size?: string;
+      quantization_level?: string;
+    };
+  }>;
 }

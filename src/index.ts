@@ -9,14 +9,13 @@ import type {
   ChatCompletionPayload,
   ChatCompletionResponse,
   Model,
-  Chat,
-  UserInfo,
-  HealthStatus,
-  FunctionDefinition,
-  ConversationPayload,
-  UpdateChatPayload,
   RequestOptions,
-  DeleteResponse,
+  UploadedFile,
+  OllamaGeneratePayload,
+  OllamaGenerateResponse,
+  OllamaEmbedPayload,
+  OllamaEmbedResponse,
+  OllamaTagsResponse,
 } from './types.js';
 
 export type {
@@ -25,15 +24,15 @@ export type {
   ChatCompletionPayload,
   ChatCompletionResponse,
   Model,
-  Chat,
-  UserInfo,
-  HealthStatus,
-  FunctionDefinition,
-  ConversationPayload,
-  UpdateChatPayload,
   RequestOptions,
-  DeleteResponse,
   MessageRole,
+  FileReference,
+  UploadedFile,
+  OllamaGeneratePayload,
+  OllamaGenerateResponse,
+  OllamaEmbedPayload,
+  OllamaEmbedResponse,
+  OllamaTagsResponse,
 } from './types.js';
 
 export class OpenWebUIClient {
@@ -114,7 +113,15 @@ export class OpenWebUIClient {
    * @returns List of models
    */
   async getModels(): Promise<Model[]> {
-    return await this.request<Model[]>('/api/models');
+    const response = await this.request<Model[] | { data: Model[] }>('/api/models');
+    // Handle both array response and object with data property
+    if (Array.isArray(response)) {
+      return response;
+    }
+    if (response && typeof response === 'object' && 'data' in response && Array.isArray(response.data)) {
+      return response.data;
+    }
+    throw new Error('Unexpected response format from /api/models');
   }
 
   /**
@@ -135,81 +142,110 @@ export class OpenWebUIClient {
   }
 
   /**
-   * Get chat history
-   * @returns Chat history
+   * Upload a file for RAG (Retrieval Augmented Generation)
+   * @param file - File to upload (File object or file path)
+   * @returns Uploaded file information
+   * @see https://docs.openwebui.com/getting-started/api-endpoints#uploading-files
    */
-  async getChatHistory(): Promise<Chat[]> {
-    return await this.request<Chat[]>('/api/chats');
+  async uploadFile(file: File | Blob | { path: string; name?: string }): Promise<UploadedFile> {
+    const url = `${this.url}/api/v1/files/`;
+    const formData = new FormData();
+
+    if (file instanceof File || file instanceof Blob) {
+      formData.append('file', file);
+    } else {
+      // For Node.js, we'd need to use a different approach
+      // This is a placeholder - in a real implementation, you'd use fs to read the file
+      throw new Error('File path upload not yet implemented. Please use File or Blob objects.');
+    }
+
+    const headers: Record<string, string> = {
+      Authorization: `Bearer ${this.apiKey}`,
+      Accept: 'application/json',
+    };
+
+    const fetchOptions: RequestInit = {
+      method: 'POST',
+      headers,
+      body: formData,
+      signal: AbortSignal.timeout(this.timeout),
+    };
+
+    try {
+      const response = await fetch(url, fetchOptions);
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
+      }
+      return (await response.json()) as UploadedFile;
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.name === 'TimeoutError' || error.name === 'AbortError') {
+          throw new Error(`Request timeout after ${this.timeout}ms`);
+        }
+        throw error;
+      }
+      throw new Error('Unknown error occurred');
+    }
   }
 
   /**
-   * Get a specific chat by ID
-   * @param chatId - Chat ID
-   * @returns Chat details
+   * Add a file to a knowledge collection
+   * @param knowledgeId - Knowledge collection ID
+   * @param fileId - File ID to add
+   * @returns Response
+   * @see https://docs.openwebui.com/getting-started/api-endpoints#adding-files-to-knowledge-collections
    */
-  async getChat(chatId: string): Promise<Chat> {
-    return await this.request<Chat>(`/api/chats/${chatId}`);
+  async addFileToKnowledge(knowledgeId: string, fileId: string): Promise<{ success: boolean }> {
+    return await this.request<{ success: boolean }>(
+      `/api/v1/knowledge/${knowledgeId}/file/add`,
+      {
+        method: 'POST',
+        body: { file_id: fileId },
+      }
+    );
   }
 
-  /**
-   * Delete a chat
-   * @param chatId - Chat ID
-   * @returns Deletion response
-   */
-  async deleteChat(chatId: string): Promise<DeleteResponse> {
-    return await this.request<DeleteResponse>(`/api/chats/${chatId}`, {
-      method: 'DELETE',
-    });
-  }
+  // ============================================================================
+  // Ollama API Proxy Endpoints
+  // @see https://docs.openwebui.com/getting-started/api-endpoints#ollama-api-proxy-support
+  // ============================================================================
 
   /**
-   * Get user info
-   * @returns User information
+   * Generate completion using Ollama (streaming supported)
+   * @param payload - Ollama generate payload
+   * @returns Generate response (or stream if stream=true)
+   * @see https://docs.openwebui.com/getting-started/api-endpoints#generate-completion-streaming
    */
-  async getUserInfo(): Promise<UserInfo> {
-    return await this.request<UserInfo>('/api/users/me');
-  }
-
-  /**
-   * Health check
-   * @returns Health status
-   */
-  async healthCheck(): Promise<HealthStatus> {
-    return await this.request<HealthStatus>('/health');
-  }
-
-  /**
-   * Create a new conversation
-   * @param payload - Conversation payload
-   * @returns Created conversation
-   */
-  async createConversation(payload: ConversationPayload): Promise<Chat> {
-    return await this.request<Chat>('/api/chats', {
+  async ollamaGenerate(payload: OllamaGeneratePayload): Promise<OllamaGenerateResponse> {
+    return await this.request<OllamaGenerateResponse>('/ollama/api/generate', {
       method: 'POST',
       body: payload,
     });
   }
 
   /**
-   * Update chat metadata
-   * @param chatId - Chat ID
-   * @param payload - Update payload
-   * @returns Updated chat
+   * List available Ollama models
+   * @returns List of Ollama models
+   * @see https://docs.openwebui.com/getting-started/api-endpoints#list-available-models
    */
-  async updateChat(chatId: string, payload: UpdateChatPayload): Promise<Chat> {
-    return await this.request<Chat>(`/api/chats/${chatId}`, {
-      method: 'PATCH',
+  async ollamaListModels(): Promise<OllamaTagsResponse> {
+    return await this.request<OllamaTagsResponse>('/ollama/api/tags');
+  }
+
+  /**
+   * Generate embeddings using Ollama
+   * @param payload - Ollama embed payload
+   * @returns Embeddings response
+   * @see https://docs.openwebui.com/getting-started/api-endpoints#generate-embeddings
+   */
+  async ollamaEmbed(payload: OllamaEmbedPayload): Promise<OllamaEmbedResponse> {
+    return await this.request<OllamaEmbedResponse>('/ollama/api/embed', {
+      method: 'POST',
       body: payload,
     });
   }
 
-  /**
-   * Get available functions/tools
-   * @returns List of functions
-   */
-  async getFunctions(): Promise<FunctionDefinition[]> {
-    return await this.request<FunctionDefinition[]>('/api/functions');
-  }
 
   /**
    * Execute a custom API call

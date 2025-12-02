@@ -9,7 +9,9 @@ A Node.js client plugin for interacting with OpenWebUI APIs. Written in TypeScri
 - ⚡ **TypeScript** - Full type safety and IntelliSense support
 - 📦 **Modern ES Modules** - Uses ES6 import/export syntax
 - 🎯 **Type-Safe** - Comprehensive type definitions for all API methods
-- 🔄 **Comprehensive API Coverage** - Covers major OpenWebUI endpoints
+- 🔄 **Official API Compliance** - Implements all documented OpenWebUI API endpoints
+- 🧠 **RAG Support** - File upload and knowledge collection management
+- 🤖 **Ollama Proxy** - Full support for Ollama API proxy endpoints
 - ⏱️ **Configurable Timeout** - Prevent hanging requests
 - 🛠️ **Custom Requests** - Make custom API calls with full type support
 
@@ -92,73 +94,46 @@ console.log('Response:', response);
 // Returns: ChatCompletionResponse
 ```
 
-#### Get Chat History
+#### Ollama API Proxy (Official API)
 
 ```typescript
-const chats = await client.getChatHistory();
-console.log('Chat history:', chats);
-// Returns: Chat[]
-```
+// List available Ollama models
+const ollamaModels = await client.ollamaListModels();
+console.log('Ollama models:', ollamaModels.models);
 
-#### Get Specific Chat
-
-```typescript
-const chat = await client.getChat('chat-id-here');
-console.log('Chat details:', chat);
-// Returns: Chat
-```
-
-#### Create New Conversation
-
-```typescript
-const conversation = await client.createConversation({
-  title: 'My New Chat',
-  messages: []
+// Generate completion using Ollama
+const ollamaResponse = await client.ollamaGenerate({
+  model: 'gemma3:12b',
+  prompt: 'Hello, how are you?',
+  stream: false
 });
-console.log('Created conversation:', conversation);
-// Returns: Chat
-```
+console.log('Ollama response:', ollamaResponse.response);
 
-#### Update Chat
-
-```typescript
-const updated = await client.updateChat('chat-id-here', {
-  title: 'Updated Title'
+// Generate embeddings
+const embeddings = await client.ollamaEmbed({
+  model: 'embeddinggemma:latest',
+  input: 'Hello world'
 });
-console.log('Updated chat:', updated);
-// Returns: Chat
+console.log('Embeddings:', embeddings.embeddings);
 ```
 
-#### Delete Chat
+#### RAG (Retrieval Augmented Generation) - Official API
 
 ```typescript
-const result = await client.deleteChat('chat-id-here');
-console.log('Deletion result:', result);
-// Returns: { success: boolean }
-```
+// Upload a file for RAG
+const file = new File(['content'], 'document.txt', { type: 'text/plain' });
+const uploadedFile = await client.uploadFile(file);
+console.log('Uploaded file ID:', uploadedFile.id);
 
-#### Get User Info
+// Add file to knowledge collection
+await client.addFileToKnowledge('knowledge-collection-id', uploadedFile.id);
 
-```typescript
-const userInfo = await client.getUserInfo();
-console.log('User info:', userInfo);
-// Returns: UserInfo
-```
-
-#### Health Check
-
-```typescript
-const health = await client.healthCheck();
-console.log('Health status:', health);
-// Returns: HealthStatus
-```
-
-#### Get Functions/Tools
-
-```typescript
-const functions = await client.getFunctions();
-console.log('Available functions:', functions);
-// Returns: FunctionDefinition[]
+// Use files in chat completion
+const response = await client.createChatCompletion({
+  model: 'gemma3:12b',
+  messages: [{ role: 'user', content: 'What is in the document?' }],
+  files: [{ type: 'file', id: uploadedFile.id }]
+});
 ```
 
 #### Custom API Request
@@ -178,21 +153,35 @@ console.log('Custom request result:', result);
 // Returns: CustomResponse
 ```
 
+## API Endpoints
+
+### Official Endpoints (Documented)
+
+- ✅ `GET /api/models` - Get available models
+- ✅ `POST /api/chat/completions` - Create chat completion
+- ✅ `POST /api/v1/files/` - Upload file for RAG
+- ✅ `POST /api/v1/knowledge/{id}/file/add` - Add file to knowledge collection
+- ✅ `GET /ollama/api/tags` - List Ollama models
+- ✅ `POST /ollama/api/generate` - Generate completion via Ollama
+- ✅ `POST /ollama/api/embed` - Generate embeddings via Ollama
+
+
 ## Type Definitions
 
 The plugin includes comprehensive TypeScript type definitions:
 
 - `OpenWebUIConfig` - Client configuration
 - `ChatMessage` - Chat message structure
-- `ChatCompletionPayload` - Chat completion request
+- `ChatCompletionPayload` - Chat completion request (supports RAG via `files` parameter)
 - `ChatCompletionResponse` - Chat completion response
 - `Model` - Model information
-- `Chat` - Chat/conversation structure
-- `UserInfo` - User information
-- `HealthStatus` - Health check response
-- `FunctionDefinition` - Function/tool definition
-- `ConversationPayload` - New conversation payload
-- `UpdateChatPayload` - Chat update payload
+- `FileReference` - File reference for RAG
+- `UploadedFile` - Uploaded file information
+- `OllamaGeneratePayload` - Ollama generate request
+- `OllamaGenerateResponse` - Ollama generate response
+- `OllamaEmbedPayload` - Ollama embed request
+- `OllamaEmbedResponse` - Ollama embed response
+- `OllamaTagsResponse` - Ollama models list response
 - `RequestOptions` - Custom request options
 
 All types are exported and available for import:
@@ -203,7 +192,6 @@ import type {
   ChatMessage,
   ChatCompletionPayload,
   Model,
-  UserInfo,
 } from './dist/index.js';
 ```
 
@@ -263,10 +251,6 @@ async function chatExample(): Promise<void> {
   });
 
   try {
-    // Check health
-    await client.healthCheck();
-    console.log('✅ OpenWebUI is healthy');
-
     // Get available models
     const models: Model[] = await client.getModels();
     console.log('📋 Available models:', models);
@@ -285,9 +269,9 @@ async function chatExample(): Promise<void> {
     const response = await client.createChatCompletion(payload);
     console.log('💬 Response:', response);
 
-    // Get user info
-    const userInfo = await client.getUserInfo();
-    console.log('👤 User:', userInfo);
+    // List Ollama models
+    const ollamaModels = await client.ollamaListModels();
+    console.log('🤖 Ollama models:', ollamaModels.models);
 
   } catch (error) {
     if (error instanceof Error) {

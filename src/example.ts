@@ -24,28 +24,21 @@ async function main(): Promise<void> {
   console.log('🚀 OpenWebUI Client Example\n');
 
   try {
-    // 1. Health Check
-    console.log('1️⃣  Checking OpenWebUI health...');
-    const health = await client.healthCheck();
-    console.log('✅ Health Status:', health);
-    console.log();
-
-    // 2. Get User Info
-    console.log('2️⃣  Getting user information...');
-    const userInfo = await client.getUserInfo();
-    console.log('👤 User Info:', userInfo);
-    console.log();
-
-    // 3. Get Available Models
-    console.log('3️⃣  Fetching available models...');
+    // 1. Get Available Models
+    console.log('1️⃣  Fetching available models...');
     const models: Model[] = await client.getModels();
     console.log('📋 Available Models:', models);
+    if (models.length > 0) {
+      console.log(`   Found ${models.length} model(s)`);
+      console.log(`   First model: ${models[0].id}`);
+    }
     console.log();
 
-    // 4. Create a Chat Completion with type safety
-    console.log('4️⃣  Creating a chat completion...');
+    // 2. Create a Chat Completion with type safety
+    console.log('2️⃣  Creating a chat completion...');
+    const modelId = models.length > 0 ? models[0].id : 'gpt-3.5-turbo';
     const payload: ChatCompletionPayload = {
-      model: 'gpt-3.5-turbo', // Use a model from your available models
+      model: modelId,
       messages: [
         {
           role: 'system',
@@ -62,28 +55,31 @@ async function main(): Promise<void> {
 
     const chatResponse = await client.createChatCompletion(payload);
     console.log('💬 Chat Response:', chatResponse);
+    if (chatResponse.choices && chatResponse.choices.length > 0) {
+      console.log(`   Message: ${chatResponse.choices[0].message.content}`);
+    }
     console.log();
 
-    // 5. Get Chat History
-    console.log('5️⃣  Fetching chat history...');
-    const chatHistory = await client.getChatHistory();
-    console.log('📜 Chat History:', chatHistory);
+    // 3. List Ollama Models
+    console.log('3️⃣  Listing Ollama models...');
+    const ollamaModels = await client.ollamaListModels();
+    console.log('🤖 Ollama Models:', ollamaModels.models?.length || 0);
+    if (ollamaModels.models && ollamaModels.models.length > 0) {
+      console.log(`   First model: ${ollamaModels.models[0].name}`);
+    }
     console.log();
 
-    // 6. Get Available Functions
-    console.log('6️⃣  Fetching available functions...');
-    const functions = await client.getFunctions();
-    console.log('🔧 Functions:', functions);
-    console.log();
-
-    // 7. Create a new conversation
-    console.log('7️⃣  Creating a new conversation...');
-    const conversation = await client.createConversation({
-      title: 'TypeScript Example Chat',
-      messages: [],
-    });
-    console.log('💬 Created Conversation:', conversation);
-    console.log();
+    // 4. Generate with Ollama
+    if (models.length > 0) {
+      console.log('4️⃣  Generating with Ollama...');
+      const ollamaResponse = await client.ollamaGenerate({
+        model: modelId,
+        prompt: 'Say hello in one sentence.',
+        stream: false,
+      });
+      console.log('🤖 Ollama Response:', ollamaResponse.response);
+      console.log();
+    }
 
     console.log('✅ All operations completed successfully!');
   } catch (error) {
