@@ -2,6 +2,8 @@
 
 A Node.js client plugin for interacting with OpenWebUI APIs. Written in TypeScript and supports Node.js 18 and above.
 
+📦 [npm package](https://www.npmjs.com/package/@kingsland/open-web-ui-client)
+
 ## Features
 
 - ✅ **Node.js 18+ Support** - Uses native fetch API (no external dependencies)
@@ -18,7 +20,7 @@ A Node.js client plugin for interacting with OpenWebUI APIs. Written in TypeScri
 ## Installation
 
 ```bash
-npm install
+npm install @kingsland/open-web-ui-client
 ```
 
 ## Requirements
@@ -45,7 +47,7 @@ npm run clean
 ### Basic Setup
 
 ```typescript
-import OpenWebUIClient from './dist/index.js';
+import OpenWebUIClient from '@kingsland/open-web-ui-client';
 
 const client = new OpenWebUIClient({
   url: 'http://localhost:3000',  // Your OpenWebUI instance URL
@@ -62,7 +64,7 @@ import OpenWebUIClient, {
   type ChatMessage,
   type Model,
   type UserInfo,
-} from './dist/index.js';
+} from '@kingsland/open-web-ui-client';
 ```
 
 ### Available Methods
@@ -78,7 +80,7 @@ console.log('Available models:', models);
 #### Create Chat Completion
 
 ```typescript
-import type { ChatCompletionPayload } from './dist/index.js';
+import type { ChatCompletionPayload } from '@kingsland/open-web-ui-client';
 
 const payload: ChatCompletionPayload = {
   model: 'gpt-3.5-turbo',
@@ -192,7 +194,7 @@ import type {
   ChatMessage,
   ChatCompletionPayload,
   Model,
-} from './dist/index.js';
+} from '@kingsland/open-web-ui-client';
 ```
 
 ## Configuration Options
@@ -242,7 +244,7 @@ npm run example
 import OpenWebUIClient, {
   type ChatCompletionPayload,
   type Model,
-} from './dist/index.js';
+} from '@kingsland/open-web-ui-client';
 
 async function chatExample(): Promise<void> {
   const client = new OpenWebUIClient({
@@ -339,7 +341,7 @@ npm install dotenv
 ```
 
 ```typescript
-import OpenWebUIClient from './dist/index.js';
+import OpenWebUIClient from '@kingsland/open-web-ui-client';
 import dotenv from 'dotenv';
 
 dotenv.config();
