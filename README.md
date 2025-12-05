@@ -2,7 +2,7 @@
 
 A Node.js client plugin for interacting with OpenWebUI APIs. Written in TypeScript and supports Node.js 18 and above.
 
-📦 [npm package](https://www.npmjs.com/package/@kingsland/open-web-ui-client)
+📦 [npm package](https://www.npmjs.com/package/@kingsland/open-webui-client)
 
 ## Features
 
@@ -20,7 +20,7 @@ A Node.js client plugin for interacting with OpenWebUI APIs. Written in TypeScri
 ## Installation
 
 ```bash
-npm install @kingsland/open-web-ui-client
+npm install @kingsland/open-webui-client
 ```
 
 ## Requirements
@@ -47,7 +47,7 @@ npm run clean
 ### Basic Setup
 
 ```typescript
-import OpenWebUIClient from '@kingsland/open-web-ui-client';
+import OpenWebUIClient from '@kingsland/open-webui-client';
 
 const client = new OpenWebUIClient({
   url: 'http://localhost:3000',  // Your OpenWebUI instance URL
@@ -64,7 +64,7 @@ import OpenWebUIClient, {
   type ChatMessage,
   type Model,
   type UserInfo,
-} from '@kingsland/open-web-ui-client';
+} from '@kingsland/open-webui-client';
 ```
 
 ### Available Methods
@@ -80,7 +80,7 @@ console.log('Available models:', models);
 #### Create Chat Completion
 
 ```typescript
-import type { ChatCompletionPayload } from '@kingsland/open-web-ui-client';
+import type { ChatCompletionPayload } from '@kingsland/open-webui-client';
 
 const payload: ChatCompletionPayload = {
   model: 'gpt-3.5-turbo',
@@ -194,7 +194,7 @@ import type {
   ChatMessage,
   ChatCompletionPayload,
   Model,
-} from '@kingsland/open-web-ui-client';
+} from '@kingsland/open-webui-client';
 ```
 
 ## Configuration Options
@@ -228,9 +228,26 @@ try {
 
 ## Running Tests
 
+The project uses [Vitest](https://vitest.dev/) for testing.
+
 ```bash
+# Run tests once
 npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:coverage
 ```
+
+The test suite includes comprehensive coverage of:
+- Client initialization and configuration
+- All API methods (getModels, createChatCompletion, etc.)
+- Error handling (timeouts, HTTP errors, etc.)
+- File upload functionality
+- Ollama proxy endpoints
+- Custom request handling
 
 ## Running Examples
 
@@ -244,7 +261,7 @@ npm run example
 import OpenWebUIClient, {
   type ChatCompletionPayload,
   type Model,
-} from '@kingsland/open-web-ui-client';
+} from '@kingsland/open-webui-client';
 
 async function chatExample(): Promise<void> {
   const client = new OpenWebUIClient({
@@ -295,10 +312,13 @@ open-web-ui-client/
 │   ├── index.ts          # Main client implementation
 │   ├── types.ts          # TypeScript type definitions
 │   ├── test.ts           # Test suite
+│   ├── index.test.ts     # Vitest test suite
 │   └── example.ts        # Usage examples
 ├── dist/                 # Compiled JavaScript (generated)
 ├── package.json
 ├── tsconfig.json
+├── vitest.config.ts      # Vitest configuration
+├── CHANGELOG.md          # Auto-generated changelog
 └── README.md
 ```
 
@@ -307,8 +327,33 @@ open-web-ui-client/
 - `npm run build` - Compile TypeScript to JavaScript
 - `npm run watch` - Watch mode for development
 - `npm test` - Run tests
+- `npm run test:watch` - Run tests in watch mode
+- `npm run test:coverage` - Generate test coverage report
 - `npm run example` - Run example code
 - `npm run clean` - Remove build artifacts
+- `npm version <patch|minor|major>` - Bump version and generate changelog
+
+### Changelog
+
+This project uses [conventional-changelog](https://github.com/conventional-changelog/conventional-changelog) to automatically generate changelog entries from git commit messages.
+
+When you run `npm version`, it will:
+1. Generate changelog entries from commits since the last tag
+2. Update `CHANGELOG.md`
+3. Bump the version in `package.json`
+4. Create a git commit
+
+**Important**: Use [Conventional Commits](https://www.conventionalcommits.org/) format for your commit messages to ensure they appear in the changelog:
+
+- `feat:` - New features
+- `fix:` - Bug fixes
+- `docs:` - Documentation changes
+- `chore:` - Maintenance tasks
+- `refactor:` - Code refactoring
+- `test:` - Test changes
+- `ci:` - CI/CD changes
+
+See `CHANGELOG_GUIDE.md` for detailed information about changelog generation.
 
 ## Getting Your API Key
 
@@ -341,7 +386,7 @@ npm install dotenv
 ```
 
 ```typescript
-import OpenWebUIClient from '@kingsland/open-web-ui-client';
+import OpenWebUIClient from '@kingsland/open-webui-client';
 import dotenv from 'dotenv';
 
 dotenv.config();

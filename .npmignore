@@ -3,38 +3,43 @@ src/
 *.ts
 !*.d.ts
 
-# Configuration files
+# Test files
+*.test.ts
+*.test.js
+*.spec.ts
+*.spec.js
+test/
+tests/
+__tests__/
+coverage/
+
+# Config files
+*.config.ts
+*.config.js
+vitest.config.ts
 tsconfig.json
-.gitignore
-.npmignore
-
-# Documentation (README will be included automatically)
-QUICKSTART.md
-
-# Build artifacts that shouldn't be in package
-*.tsbuildinfo
 
 # Development files
+.github/
+.git/
+.gitignore
+.npmignore
+.env
+.env.*
+
+# Documentation (keep README.md as it's in files array)
+QUICKSTART.md
+
+# CI/CD
+.github/
+
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# OS files
+# OS
 .DS_Store
 Thumbs.db
-
-# Logs
-logs/
-*.log
-npm-debug.log*
-
-# Testing
-coverage/
-.nyc_output/
-
-# Environment
-.env
-.env.local
-.env.*.local
