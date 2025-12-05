@@ -14,6 +14,7 @@ jobs:
   test:
     name: Test, Type Check, and Publish
     runs-on: ubuntu-latest
+    environment: production
     
     strategy:
       matrix:
@@ -42,7 +43,6 @@ jobs:
         run: npm run build
       
       - name: Publish to NPM
-        environment: production
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
