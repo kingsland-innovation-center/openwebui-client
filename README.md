@@ -1,12 +1,12 @@
 # OpenWebUI Client Plugin (TypeScript)
 
-A Node.js client plugin for interacting with OpenWebUI APIs. Written in TypeScript and supports Node.js 18 and above.
+A Node.js client plugin for interacting with OpenWebUI APIs. Written in TypeScript and supports Node.js 20 and above.
 
 📦 [npm package](https://www.npmjs.com/package/@kingsland/open-webui-client)
 
 ## Features
 
-- ✅ **Node.js 18+ Support** - Uses native fetch API (no external dependencies)
+- ✅ **Node.js 20+ Support** - Uses native fetch API (no external dependencies)
 - 🔐 **API Key Authentication** - Secure authentication with Bearer tokens
 - ⚡ **TypeScript** - Full type safety and IntelliSense support
 - 📦 **Modern ES Modules** - Uses ES6 import/export syntax
@@ -20,12 +20,12 @@ A Node.js client plugin for interacting with OpenWebUI APIs. Written in TypeScri
 ## Installation
 
 ```bash
-npm install @kingsland/open-webui-client
+npm i @kingsland/open-webui-client
 ```
 
 ## Requirements
 
-- Node.js >= 18.0.0
+- Node.js >= 20.0.0
 - OpenWebUI instance running and accessible
 - Valid OpenWebUI API key
 
@@ -382,7 +382,7 @@ OPENWEBUI_TIMEOUT=30000
 Then use with a package like `dotenv`:
 
 ```bash
-npm install dotenv
+npm i dotenv
 ```
 
 ```typescript
