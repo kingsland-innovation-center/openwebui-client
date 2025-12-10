@@ -47,7 +47,7 @@
     "url": "git+https://github.com/kingsland-innovation-center/openwebui-client.git"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com",
+    "registry": "https://registry.npmjs.org",
     "access": "public"
   },
   "dependencies": {},
