@@ -44,7 +44,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kingsland-innovation-center/openwebui-client.git"
+    "url": "git+https://github.com/kingsland-innovation-center/openwebui-client.git"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com",
