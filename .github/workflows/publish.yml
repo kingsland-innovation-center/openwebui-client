@@ -5,15 +5,22 @@ on:
     types: [created]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
     environment: production
-    permissions:
-      contents: read
-      packages: write
     
-    steps:
+  steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+    
       - name: Checkout repository
         uses: actions/checkout@v4
       
@@ -30,6 +37,4 @@ jobs:
       
       - name: Publish NPM package
         run: npm publish
-        env:
-          NPM_CONFIG_TOKEN: ${{ secrets.GIT_TOKEN }}
 
