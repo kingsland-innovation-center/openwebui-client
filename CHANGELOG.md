@@ -1,3 +1,12 @@
+## [1.3.7](https://github.com/kingsland-innovation-center/openwebui-client/compare/v1.3.6...v1.3.7) (2025-12-10)
+
+
+### Bug Fixes
+
+* update registry url ([8e5e662](https://github.com/kingsland-innovation-center/openwebui-client/commit/8e5e6625661cd0f0a24736423531934c974b810b))
+
+
+
 ## [1.3.6](https://github.com/kingsland-innovation-center/openwebui-client/compare/v1.3.5...v1.3.6) (2025-12-10)
 
 
