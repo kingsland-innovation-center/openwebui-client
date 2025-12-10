@@ -1,3 +1,12 @@
+## [1.3.5](https://github.com/kingsland-innovation-center/openwebui-client/compare/v1.3.4...v1.3.5) (2025-12-10)
+
+
+### Bug Fixes
+
+* npmrc for ci ([9dfb164](https://github.com/kingsland-innovation-center/openwebui-client/commit/9dfb16426b6923bc46e66464d227be087fe51da6))
+
+
+
 ## [1.3.4](https://github.com/kingsland-innovation-center/openwebui-client/compare/v1.3.3...v1.3.4) (2025-12-10)
 
 
