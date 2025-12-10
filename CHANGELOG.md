@@ -1,3 +1,12 @@
+## [1.3.2](https://github.com/kingsland-innovation-center/openwebui-client/compare/v1.3.0...v1.3.2) (2025-12-10)
+
+
+### Features
+
+* npm publish dedicated job for publishing ([a71616b](https://github.com/kingsland-innovation-center/openwebui-client/commit/a71616b83ea715f46255c2fa67746791dc3e5d4c))
+
+
+
 # [1.3.0](/compare/v1.2.0...v1.3.0) (2025-12-05)
 
 
