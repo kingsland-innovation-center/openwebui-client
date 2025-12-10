@@ -1,3 +1,12 @@
+## [1.3.4](https://github.com/kingsland-innovation-center/openwebui-client/compare/v1.3.3...v1.3.4) (2025-12-10)
+
+
+### Bug Fixes
+
+* npm auth ([08dbfa0](https://github.com/kingsland-innovation-center/openwebui-client/commit/08dbfa0c220d14947d2f4720c133cb84ff208810))
+
+
+
 ## [1.3.3](https://github.com/kingsland-innovation-center/openwebui-client/compare/v1.3.2...v1.3.3) (2025-12-10)
 
 
