@@ -1,3 +1,12 @@
+## [1.3.3](https://github.com/kingsland-innovation-center/openwebui-client/compare/v1.3.2...v1.3.3) (2025-12-10)
+
+
+### Bug Fixes
+
+* ci publish ([0fd0986](https://github.com/kingsland-innovation-center/openwebui-client/commit/0fd0986a010fda8ae9f0bfa3dc5fe62212f6b111))
+
+
+
 ## [1.3.2](https://github.com/kingsland-innovation-center/openwebui-client/compare/v1.3.0...v1.3.2) (2025-12-10)
 
 
